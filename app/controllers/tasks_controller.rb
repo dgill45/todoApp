@@ -1,11 +1,11 @@
 class TasksController < ApplicationController
-    #Get all tasks - /tasks
+    #GET all tasks - /tasks
     def index
         tasks = Task.all
         render json: tasks
     end
 
-    #Get a particular task - /tasks/:id
+    #GET a particular task - /tasks/:id
     def show
         task = Task.find(task_params[:id])
         if task
@@ -15,19 +15,30 @@ class TasksController < ApplicationController
         end
     end
 
-    #Create a new task - Post /tasks
+    #Create a new task - POST /tasks
     def create
         task = Task.create(task_params)
         render json: task
     end
 
-    #Find a task and edit - Patch /tasks/:id
+    #Find a task and edit - PATCH /tasks/:id
     def update
         task = Task.find(task_params[:id])
         if task
             task.update(task_params)
             render json: task
         else 
+            render json: {error: "Task not found" }, status: :not_found
+        end
+    end
+
+    #Find a task and delete it - DELETE /tasks/:id
+    def destroy
+        task = Task.find(task_params[:id])
+        if task
+            task.destroy
+            head :no_content
+        else
             render json: {error: "Task not found" }, status: :not_found
         end
     end
